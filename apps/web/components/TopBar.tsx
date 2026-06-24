@@ -28,7 +28,7 @@ export function Wordmark({ className = "" }: { className?: string }) {
         <span className="font-display block text-lg font-extrabold tracking-tight text-ink">
           Rappi<span className="text-brand">·</span>Ops
         </span>
-        <span className="block text-[11px] font-medium text-ink-soft">
+        <span className="hidden text-[11px] font-medium text-ink-soft sm:block">
           Bono dinámico por lluvia
         </span>
       </span>
@@ -40,10 +40,10 @@ export function Wordmark({ className = "" }: { className?: string }) {
 export function TopBar({ right }: { right?: ReactNode }) {
   return (
     <header className="sticky top-0 z-30 border-b border-line/70 bg-paper/80 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
-        <Wordmark />
-        <div className="flex items-center gap-2.5">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-card px-3 py-1.5 text-sm font-semibold text-ink shadow-soft">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 px-4 sm:gap-4 sm:px-8">
+        <Wordmark className="min-w-0" />
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
+          <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-line bg-card px-2.5 py-1 text-xs font-semibold text-ink shadow-soft sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-sm">
             <svg viewBox="0 0 24 24" className="h-4 w-4 text-brand" fill="currentColor" aria-hidden>
               <path d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z" />
             </svg>
@@ -65,7 +65,7 @@ export function ConnPill({ status }: { status: "connecting" | "online" | "offlin
   }[status];
   return (
     <span
-      className={`inline-flex items-center gap-2 rounded-full bg-card px-3 py-1.5 text-sm font-semibold text-ink-soft shadow-soft ring-1 ${cfg.ring}`}
+      className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-card px-2.5 py-1 text-xs font-semibold text-ink-soft shadow-soft ring-1 sm:gap-2 sm:px-3 sm:py-1.5 sm:text-sm ${cfg.ring}`}
     >
       <span className={`relative h-2 w-2 rounded-full ${cfg.dot} ${status === "online" ? "ping-soft" : ""}`} />
       {cfg.label}

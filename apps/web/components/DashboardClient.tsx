@@ -107,7 +107,7 @@ export function DashboardClient({ initial }: { initial: ZoneOverview[] }) {
               Bono por entrega recomendado para Rappiteneros, recalculado por zona
               según el forecast de lluvia de las próximas 72&nbsp;horas.
             </p>
-            <div className="mt-6 flex flex-wrap items-center gap-2.5">
+            <div className="mt-6 grid grid-cols-2 gap-2.5 sm:flex sm:flex-wrap sm:items-center">
               <HeroChip label="Zonas con lluvia" value={String(raining)} />
               <HeroChip label="Bono activo" value={String(withBonus.length)} />
               <HeroChip label="Bono máximo" value={formatBonus(maxBonus)} strong />
@@ -212,7 +212,7 @@ function HeroChip({ label, value, strong }: { label: string; value: string; stro
   return (
     <div
       className={`rounded-2xl px-3.5 py-2 backdrop-blur ${
-        strong ? "bg-white text-brand-700" : "bg-white/15 text-white"
+        strong ? "col-span-2 bg-white text-brand-700 sm:col-auto" : "bg-white/15 text-white"
       }`}
     >
       <div className={`text-[11px] font-semibold uppercase tracking-wide ${strong ? "text-brand-600/80" : "text-white/80"}`}>

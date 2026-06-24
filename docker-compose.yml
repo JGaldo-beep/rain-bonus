@@ -1,0 +1,64 @@
+services:
+  postgres:
+    image: timescale/timescaledb:latest-pg17
+    container_name: fleetweather-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-fleetweather}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fleetweather}
+      POSTGRES_DB: ${POSTGRES_DB:-fleetweather}
+    ports:
+      - "${POSTGRES_HOST_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: fleetweather-app:latest
+    container_name: fleetweather-api
+    command: ["pnpm", "--filter", "@fleetweather/api", "start:demo"]
+    environment:
+      # In-network service names override the localhost values in .env.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-fleetweather}:${POSTGRES_PASSWORD:-fleetweather}@postgres:5432/${POSTGRES_DB:-fleetweather}
+      API_PORT: "3000"
+      API_KEY: ${API_KEY:-demo-key}
+    ports:
+      - "${API_HOST_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        ["CMD", "node", "-e",
+         "fetch('http://localhost:3000/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  web:
+    image: fleetweather-app:latest
+    container_name: fleetweather-web
+    command:
+      ["pnpm", "--filter", "@fleetweather/web", "exec", "next", "dev", "-p", "3000", "-H", "0.0.0.0"]
+    environment:
+      # SSR + Ops-proxy route handlers (inside the container) reach the API by
+      # service name and hold the bearer key server-side; the browser uses the
+      # published host port and only ever talks to same-origin Next routes + WS.
+      API_INTERNAL_URL: http://api:3000/api/v1
+      API_KEY: ${API_KEY:-demo-key}
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:${API_HOST_PORT:-3000}/api/v1
+      NEXT_PUBLIC_WS_URL: ws://localhost:${API_HOST_PORT:-3000}/ws/v1
+    ports:
+      - "${WEB_HOST_PORT:-3001}:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  pgdata:

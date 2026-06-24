@@ -1,0 +1,30 @@
+{
+  "name": "@fleetweather/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/index.js",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test src/engine/bonus.test.ts src/engine/lifecycle.test.ts",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts",
+    "start:demo": "tsx src/db/migrate.ts && tsx src/db/seed.ts && tsx src/index.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11",
+    "@fastify/websocket": "^11",
+    "@fleetweather/shared": "workspace:*",
+    "fastify": "^5",
+    "pg": "^8",
+    "zod": "^4"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/pg": "^8",
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}

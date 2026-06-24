@@ -1,0 +1,34 @@
+FleetWeather — Bono dinámico por lluvia para Rappiteneros
+
+EL PROBLEMA
+Cuando llueve, el mercado de delivery se desbalancea en dos direcciones a la vez:
+- La demanda SUBE: los usuarios piden más porque no quieren salir.
+- La oferta BAJA: muchos Rappiteneros no se conectan bajo la lluvia.
+Hoy la decisión de cuánto subir el incentivo se hace manual, reactiva y sin un modelo por zona.
+
+LA SOLUCIÓN
+Un sistema end-to-end que automatiza el ciclo completo y recomienda un bono concreto en COP por entrega, por zona, antes de que llueva.
+
+EL FLUJO END-TO-END
+1. Ingesta de datos
+   - Clima (APIs externas): OpenWeather, Open-Meteo, NOAA — cada 15 min.
+   - Oferta y demanda internas de Rappi por zona, hora y nivel de lluvia.
+2. Forecast de lluvia por zona
+   - Promedia múltiples fuentes y proyecta 72 h la intensidad de lluvia (none / light / moderate / heavy), con un % de confianza.
+3. Cálculo del bono
+   - Cruza el forecast con la oferta y demanda de cada zona.
+   - Calcula la brecha de oferta y traduce el déficit de Rappiteneros a COP por entrega.
+   - Reglas: incrementos de $500 COP, tope de $3.000 COP, fijado 30 min antes de la lluvia.
+4. Dashboard de operaciones
+   - Mapa de Bogotá con zonas coloreadas por nivel de bono.
+   - Bono recomendado por zona, en tiempo real vía WebSocket.
+   - Panel de override y aprobación manual para baja confianza.
+
+EJEMPLO DE SALIDA
++$1.200 COP / entrega en Chapinero — lluvia fuerte pronosticada en 45 min.
+
+POR QUÉ POR ZONA Y EN COP
+La sensibilidad a la lluvia y la elasticidad de demanda varían por zona; un bono único por ciudad sobre-paga donde hay oferta y sub-paga donde la brecha es crítica. El COP es la palanca operativa accionable.
+
+STACK
+Node.js (Fastify) · PostgreSQL + TimescaleDB · Redis · BullMQ · Next.js · WebSocket · Docker.

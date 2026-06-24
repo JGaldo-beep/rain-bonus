@@ -49,3 +49,19 @@ Thumbs.db
 # deploy
 .vercel
 .agents
+
+# HyperFrames video project — ignore generated/heavy artifacts, keep source
+# (frames HTML, STORYBOARD.md, frame.md, index.html, assets/ stay tracked)
+videos/**/renders/
+videos/**/snapshots/
+videos/**/.hyperframes/
+videos/**/capture/
+**/caption-skin.html.unused
+
+# firecrawl scrape cache
+.firecrawl/
+
+# tool output caches
+.lint*.json
+.lint*.txt
+.hf-dev.log

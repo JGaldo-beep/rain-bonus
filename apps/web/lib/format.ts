@@ -31,40 +31,40 @@ export function bonusTier(cop: number | null): Tier {
     return {
       key: "none",
       label: "Sin bono",
-      text: "text-emerald-300",
-      border: "border-emerald-500/30",
-      bg: "bg-emerald-500/10",
-      dot: "bg-emerald-400",
-      hex: "#34d399",
+      text: "text-emerald-700",
+      border: "border-emerald-200",
+      bg: "bg-emerald-50",
+      dot: "bg-emerald-500",
+      hex: "#10b981",
     };
   if (v <= 1000)
     return {
       key: "low",
       label: "Bono bajo",
-      text: "text-amber-300",
-      border: "border-amber-500/30",
-      bg: "bg-amber-500/10",
-      dot: "bg-amber-400",
-      hex: "#fbbf24",
+      text: "text-amber-700",
+      border: "border-amber-200",
+      bg: "bg-amber-50",
+      dot: "bg-amber-500",
+      hex: "#f59e0b",
     };
   if (v <= 2000)
     return {
       key: "high",
       label: "Bono alto",
-      text: "text-orange-300",
-      border: "border-orange-500/30",
-      bg: "bg-orange-500/10",
-      dot: "bg-orange-400",
-      hex: "#fb923c",
+      text: "text-orange-700",
+      border: "border-orange-200",
+      bg: "bg-orange-50",
+      dot: "bg-orange-500",
+      hex: "#fb6514",
     };
   return {
     key: "critical",
     label: "Bono crítico",
-    text: "text-red-300",
-    border: "border-red-500/30",
-    bg: "bg-red-500/10",
-    dot: "bg-red-400",
-    hex: "#f87171",
+    text: "text-brand-700",
+    border: "border-brand-100",
+    bg: "bg-brand-50",
+    dot: "bg-brand",
+    hex: "#ff441f",
   };
 }
 
@@ -80,10 +80,10 @@ export function rainLabel(r: RainIntensity | null): string {
 }
 
 const RAIN_HEX: Record<RainIntensity, string> = {
-  none: "#3f3f46",
+  none: "#94a3b8",
   light: "#38bdf8",
-  moderate: "#6366f1",
-  heavy: "#a855f7",
+  moderate: "#4f46e5",
+  heavy: "#7c3aed",
 };
 
 export function rainHex(r: RainIntensity): string {

@@ -1,0 +1,207 @@
+{
+  "ok": false,
+  "errorCount": 18,
+  "warningCount": 6,
+  "infoCount": 8,
+  "findings": [
+    {
+      "code": "multiple_root_compositions",
+      "severity": "error",
+      "message": "Multiple root-level HTML files with data-composition-id: caption-skin.html, index.html. The runtime may discover both as entry points, causing duplicate audio playback.",
+      "fixHint": "A project should have exactly one root index.html with data-composition-id. Remove or rename extra files."
+    },
+    {
+      "code": "root_missing_composition_id",
+      "severity": "error",
+      "message": "Root composition is missing `data-composition-id`.",
+      "fixHint": "Add a stable `data-composition-id` to the entry composition wrapper.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\01-hook.html"
+    },
+    {
+      "code": "root_missing_dimensions",
+      "severity": "error",
+      "message": "Root composition is missing `data-width` or `data-height`.",
+      "fixHint": "Set numeric `data-width` and `data-height` on the entry composition root.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\01-hook.html"
+    },
+    {
+      "code": "overlapping_gsap_tweens",
+      "severity": "warning",
+      "message": "GSAP tweens overlap on \"__unresolved__\" for p between 3.20s and 6.00s.",
+      "selector": "__unresolved__",
+      "fixHint": "Shorten the earlier tween, move the later tween, or add `overwrite: \"auto\"`.",
+      "snippet": "tl.to(\"__unresolved__\", { p: Math.PI * 2 * 8, duration: 6, ease: \"none\" }, 0) tl.to(\"__unresolved__\", { p: Math.PI * 2 * 1.6, duration: 2.8, ease: \"none\" }, 3.2)",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\01-hook.html"
+    },
+    {
+      "code": "root_missing_composition_id",
+      "severity": "error",
+      "message": "Root composition is missing `data-composition-id`.",
+      "fixHint": "Add a stable `data-composition-id` to the entry composition wrapper.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\02-pain-double.html"
+    },
+    {
+      "code": "root_missing_dimensions",
+      "severity": "error",
+      "message": "Root composition is missing `data-width` or `data-height`.",
+      "fixHint": "Set numeric `data-width` and `data-height` on the entry composition root.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\02-pain-double.html"
+    },
+    {
+      "code": "composition_file_too_large",
+      "severity": "warning",
+      "message": "This HTML composition file has 325 lines. Smaller sub-compositions are easier to read, iterate on, and diff.",
+      "fixHint": "Split this sub-composition further into smaller .html files, then mount them from the parent with data-composition-src so each file stays small enough to inspect, revise, and validate independently.",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\02-pain-double.html"
+    },
+    {
+      "code": "font_family_without_font_face",
+      "severity": "error",
+      "message": "Font family used without @font-face declaration: -apple-system. These are not in the auto-resolved font list, so the renderer cannot supply them automatically. Text will fall back to a generic font, producing incorrect typography in the video.",
+      "fixHint": "Add @font-face { font-family: '...'; src: url('capture/assets/fonts/...woff2'); } for each font family, pointing to the captured .woff2 files.",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\02-pain-double.html"
+    },
+    {
+      "code": "root_missing_composition_id",
+      "severity": "error",
+      "message": "Root composition is missing `data-composition-id`.",
+      "fixHint": "Add a stable `data-composition-id` to the entry composition wrapper.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\03-pain-today.html"
+    },
+    {
+      "code": "root_missing_dimensions",
+      "severity": "error",
+      "message": "Root composition is missing `data-width` or `data-height`.",
+      "fixHint": "Set numeric `data-width` and `data-height` on the entry composition root.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\03-pain-today.html"
+    },
+    {
+      "code": "overlapping_gsap_tweens",
+      "severity": "warning",
+      "message": "GSAP tweens overlap on \".labels\" for scale between 0.00s and 0.12s.",
+      "selector": ".labels",
+      "fixHint": "Shorten the earlier tween, move the later tween, or add `overwrite: \"auto\"`.",
+      "snippet": "tl.to(\".labels\", { scale: 0.97, duration: 0.12, ease: \"power1.in\" }, 0) tl.to(\".labels\", { scale: 1, duration: 0.6, ease: \"back.out(1.7)\" }, 0)",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\03-pain-today.html"
+    },
+    {
+      "code": "root_missing_composition_id",
+      "severity": "error",
+      "message": "Root composition is missing `data-composition-id`.",
+      "fixHint": "Add a stable `data-composition-id` to the entry composition wrapper.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\04-solution.html"
+    },
+    {
+      "code": "root_missing_dimensions",
+      "severity": "error",
+      "message": "Root composition is missing `data-width` or `data-height`.",
+      "fixHint": "Set numeric `data-width` and `data-height` on the entry composition root.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\04-solution.html"
+    },
+    {
+      "code": "root_missing_composition_id",
+      "severity": "error",
+      "message": "Root composition is missing `data-composition-id`.",
+      "fixHint": "Add a stable `data-composition-id` to the entry composition wrapper.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\05-flow-overview.html"
+    },
+    {
+      "code": "root_missing_dimensions",
+      "severity": "error",
+      "message": "Root composition is missing `data-width` or `data-height`.",
+      "fixHint": "Set numeric `data-width` and `data-height` on the entry composition root.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\05-flow-overview.html"
+    },
+    {
+      "code": "overlapping_gsap_tweens",
+      "severity": "warning",
+      "message": "GSAP tweens overlap on \"#step-1, #step-2, #step-3, #step-4\" for x, scale between 0.00s and 0.45s.",
+      "selector": "#step-1, #step-2, #step-3, #step-4",
+      "fixHint": "Shorten the earlier tween, move the later tween, or add `overwrite: \"auto\"`.",
+      "snippet": "tl.fromTo(\"#step-1, #step-2, #step-3, #step-4\", { x: 0, scale: 0.7, opacity: 1, duration: 0.45, ease: \"power2.out\" }, 0) tl.fromTo(\"#step-1, #step-2, #step-3, #step-4\", { x: targetX, scale: 1, duration: 1.1, ease: \"po...",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\05-flow-overview.html"
+    },
+    {
+      "code": "overlapping_gsap_tweens",
+      "severity": "warning",
+      "message": "GSAP tweens overlap on \"__unresolved__\" for scale between 0.00s and 0.14s.",
+      "selector": "__unresolved__",
+      "fixHint": "Shorten the earlier tween, move the later tween, or add `overwrite: \"auto\"`.",
+      "snippet": "tl.fromTo(\"__unresolved__\", { opacity: 1, y: 0, scale: 0.9, duration: 0.14, ease: \"power1.in\" }, 0) tl.to(\"__unresolved__\", { scale: 1, duration: 0.5, ease: \"__raw:`back.out(${BOUNCE})`\" }, 0)",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\05-flow-overview.html"
+    },
+    {
+      "code": "overlapping_gsap_tweens",
+      "severity": "warning",
+      "message": "GSAP tweens overlap on \"#node\" for scale between 4.72s and 4.72s.",
+      "selector": "#node",
+      "fixHint": "Shorten the earlier tween, move the later tween, or add `overwrite: \"auto\"`.",
+      "snippet": "tl.fromTo(\"#node\", { scale: 1.07, duration: 0.32, ease: \"power2.out\" }, 4.4) tl.to(\"#node\", { scale: 1, duration: 0.5, ease: \"power2.inOut\" }, 4.72)",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\06-step1-ingesta.html"
+    },
+    {
+      "code": "google_fonts_import",
+      "severity": "error",
+      "message": "Composition loads fonts from fonts.googleapis.com. External font requests fail in sandboxed/offline renders and add latency. Use local @font-face declarations with captured .woff2 files instead.",
+      "fixHint": "Replace the Google Fonts <link> or @import with @font-face { font-family: '...'; src: url('capture/assets/fonts/Font.woff2'); } pointing to captured font files.",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\06-step1-ingesta.html"
+    },
+    {
+      "code": "gsap_css_transform_conflict",
+      "severity": "error",
+      "message": "\".bar\" has CSS `transform: scaleY(0)` and a GSAP tween animates scaleY. GSAP will overwrite the full CSS transform, discarding any translateX(-50%) centering or CSS scale value.",
+      "selector": ".bar",
+      "fixHint": "Remove the transform from CSS and use tl.fromTo('.bar', { xPercent: -50, x: -1000 }, { xPercent: -50, x: 0 }) so GSAP owns the full transform state. tl.fromTo is exempt from this rule.",
+      "snippet": "tl.to(\".bar\", { scaleY: 1, duration: 0.7, ease: \"power3.out\" }, 1)",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\07-step2-forecast.html"
+    },
+    {
+      "code": "google_fonts_import",
+      "severity": "error",
+      "message": "Composition loads fonts from fonts.googleapis.com. External font requests fail in sandboxed/offline renders and add latency. Use local @font-face declarations with captured .woff2 files instead.",
+      "fixHint": "Replace the Google Fonts <link> or @import with @font-face { font-family: '...'; src: url('capture/assets/fonts/Font.woff2'); } pointing to captured font files.",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\07-step2-forecast.html"
+    },
+    {
+      "code": "root_missing_composition_id",
+      "severity": "error",
+      "message": "Root composition is missing `data-composition-id`.",
+      "fixHint": "Add a stable `data-composition-id` to the entry composition wrapper.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\12-closing.html"
+    },
+    {
+      "code": "root_missing_dimensions",
+      "severity": "error",
+      "message": "Root composition is missing `data-width` or `data-height`.",
+      "fixHint": "Set numeric `data-width` and `data-height` on the entry composition root.",
+      "snippet": "<template>",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\12-closing.html"
+    },
+    {
+      "code": "unscoped_gsap_selector",
+      "severity": "error",
+      "message": "Timeline \"12-closing\" uses unscoped selector \".chip\" that will target elements in ALL compositions when bundled, causing data loss (opacity, transforms, etc.).",
+      "selector": ".chip",
+      "fixHint": "Scope the selector: `[data-composition-id=\"12-closing\"] .chip` or use a unique id.",
+      "snippet": "tl.fromTo(\".chip\", { xPercent: -50, x: tx, y: ty, scale: 1, opacity: 1, duration: 1.1, ease: \"power3.out\" }, 0)",
+      "file": "C:\\Users\\galdi\\Desktop\\test\\videos\\fleetweather-bono\\compositions\\frames\\12-closing.html"
+    }
+  ],
+  "filesScanned": 13,
+  "_meta": {
+    "version": "0.7.5",
+    "latestVersion": "0.7.5",
+    "updateAvailable": false
+  }
+}

@@ -3,8 +3,9 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { ZoneOverview } from "../lib/types";
-import { bonusTier, formatBonus, rainLabel } from "../lib/format";
+import { bonusTier, formatBonus, formatCop, rainLabel } from "../lib/format";
 import { ZoneMap } from "./ZoneMap";
+import { TopBar, ConnPill } from "./TopBar";
 import { useZoneStream, type WsEvent } from "./useZoneStream";
 
 /** Merges a recommendation WS payload into the matching overview row. */
@@ -34,19 +35,24 @@ function applyEvent(rows: ZoneOverview[], ev: WsEvent): ZoneOverview[] {
 function StatusBadge({ z }: { z: ZoneOverview }) {
   if (z.status === "pending_approval")
     return (
-      <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-xs text-amber-300">
+      <span className="rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700">
         Aprobación manual
       </span>
     );
   if (z.pinned)
     return (
-      <span className="rounded-full bg-fuchsia-500/15 px-2 py-0.5 text-xs text-fuchsia-300">
+      <span className="rounded-full bg-fuchsia-100 px-2.5 py-1 text-xs font-semibold text-fuchsia-700">
         Override Ops
       </span>
     );
   if (z.status === "published")
-    return <span className="text-xs text-white/40">Publicado</span>;
-  return <span className="text-xs text-white/30">—</span>;
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+        Publicado
+      </span>
+    );
+  return <span className="text-xs text-ink-faint">En espera</span>;
 }
 
 export function DashboardClient({ initial }: { initial: ZoneOverview[] }) {
@@ -56,6 +62,13 @@ export function DashboardClient({ initial }: { initial: ZoneOverview[] }) {
   const withBonus = zones.filter((z) => (z.recommended_bonus_cop ?? 0) > 0);
   const maxBonus = Math.max(0, ...zones.map((z) => z.recommended_bonus_cop ?? 0));
   const pendingApproval = zones.filter((z) => z.status === "pending_approval").length;
+  const raining = zones.filter((z) => z.rain_intensity && z.rain_intensity !== "none").length;
+
+  // Sort by bonus desc so the hottest zones rise to the top of the list.
+  const sorted = useMemo(
+    () => [...zones].sort((a, b) => (b.recommended_bonus_cop ?? 0) - (a.recommended_bonus_cop ?? 0)),
+    [zones],
+  );
 
   const mapZones = useMemo(
     () =>
@@ -74,121 +87,193 @@ export function DashboardClient({ initial }: { initial: ZoneOverview[] }) {
   );
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-10">
-      <header className="mb-8">
-        <div className="flex items-center gap-2 text-sm text-white/50">
-          <ConnDot status={status} />
-          FleetWeather · Bono dinámico por lluvia
-        </div>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight">
-          Panel de operaciones — Bogotá
-        </h1>
-        <p className="mt-1 text-white/50">
-          Bono por entrega recomendado para Rappiteneros, calculado por zona según
-          el forecast de lluvia de las próximas 72 h.
-        </p>
-      </header>
+    <div className="relative z-10">
+      <TopBar right={<ConnPill status={status} />} />
 
-      {status === "offline" && (
-        <div className="mb-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
-          Conexión en vivo perdida — reintentando. Los datos pueden estar
-          desactualizados.
-        </div>
-      )}
-
-      <section className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <Kpi label="Zonas activas" value={String(zones.length)} />
-        <Kpi label="Con bono activo" value={String(withBonus.length)} />
-        <Kpi label="Bono máximo" value={formatBonus(maxBonus)} accent="text-orange-300" />
-        <Kpi
-          label="Requieren aprobación"
-          value={String(pendingApproval)}
-          accent={pendingApproval ? "text-amber-300" : undefined}
-        />
-      </section>
-
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,520px)_1fr]">
-        <section>
-          <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-white/40">
-            Mapa de zonas
-          </h2>
-          <ZoneMap zones={mapZones} />
-          <div className="mt-3 flex flex-wrap gap-3 text-xs text-white/50">
-            {(["none", "low", "high", "critical"] as const).map((k) => {
-              const t = bonusTier(
-                k === "none" ? 0 : k === "low" ? 1000 : k === "high" ? 2000 : 3000,
-              );
-              return (
-                <span key={k} className="inline-flex items-center gap-1.5">
-                  <span className={`h-2.5 w-2.5 rounded-full ${t.dot}`} />
-                  {t.label}
-                </span>
-              );
-            })}
+      <main className="mx-auto max-w-7xl px-5 pb-20 pt-6 sm:px-8">
+        {/* ── Hero ─────────────────────────────────────────── */}
+        <section className="rise relative overflow-hidden rounded-[28px] bg-linear-to-br from-brand via-brand-600 to-[#ff6a3d] p-7 text-white shadow-pop sm:p-10">
+          <RainBackdrop />
+          <div className="relative max-w-2xl">
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/20 px-3 py-1 text-xs font-bold uppercase tracking-wider backdrop-blur">
+              Centro de operaciones · Bogotá
+            </span>
+            <h1 className="font-display mt-4 text-4xl font-extrabold leading-[1.05] sm:text-5xl">
+              Cuando llueve,
+              <br />
+              el bono se mueve.
+            </h1>
+            <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-white/90">
+              Bono por entrega recomendado para Rappiteneros, recalculado por zona
+              según el forecast de lluvia de las próximas 72&nbsp;horas.
+            </p>
+            <div className="mt-6 flex flex-wrap items-center gap-2.5">
+              <HeroChip label="Zonas con lluvia" value={String(raining)} />
+              <HeroChip label="Bono activo" value={String(withBonus.length)} />
+              <HeroChip label="Bono máximo" value={formatBonus(maxBonus)} strong />
+            </div>
           </div>
         </section>
 
-        <section>
-          <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-white/40">
-            Zonas por bono recomendado
-          </h2>
-          <div className="overflow-hidden rounded-xl ring-1 ring-white/10">
-            <table className="w-full text-sm">
-              <thead className="bg-white/[0.03] text-left text-white/50">
-                <tr>
-                  <th className="px-4 py-3 font-medium">Zona</th>
-                  <th className="px-4 py-3 font-medium">Lluvia</th>
-                  <th className="px-4 py-3 font-medium text-right">Bono / entrega</th>
-                  <th className="px-4 py-3 font-medium text-right">Estado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {zones.map((z) => {
-                  const tier = bonusTier(z.recommended_bonus_cop);
-                  return (
-                    <tr
-                      key={z.zone_id}
-                      className="border-t border-white/5 hover:bg-white/[0.03]"
+        {status === "offline" && (
+          <div className="rise mt-5 flex items-center gap-2 rounded-2xl border border-brand-100 bg-brand-50 px-4 py-3 text-sm font-medium text-brand-700">
+            <span className="h-2 w-2 rounded-full bg-brand" />
+            Conexión en vivo perdida — reintentando. Los datos pueden estar desactualizados.
+          </div>
+        )}
+
+        {/* ── KPIs ─────────────────────────────────────────── */}
+        <section className="mt-6 grid grid-cols-2 gap-3.5 sm:gap-4 lg:grid-cols-4">
+          <Kpi i={0} label="Zonas activas" value={String(zones.length)} hint="monitoreadas en vivo" />
+          <Kpi i={1} label="Con bono activo" value={String(withBonus.length)} hint="incentivo > $0" accent="text-brand" />
+          <Kpi i={2} label="Bono máximo" value={formatBonus(maxBonus)} hint="por entrega" accent="text-brand" />
+          <Kpi
+            i={3}
+            label="Requieren aprobación"
+            value={String(pendingApproval)}
+            hint="baja confianza · §8"
+            accent={pendingApproval ? "text-amber-600" : undefined}
+          />
+        </section>
+
+        {/* ── Map + list ───────────────────────────────────── */}
+        <div className="mt-6 grid gap-5 lg:grid-cols-[minmax(0,520px)_1fr]">
+          <section className="rise rounded-3xl border border-line bg-card p-5 shadow-soft" style={{ animationDelay: "120ms" }}>
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="font-display text-lg font-bold text-ink">Mapa de zonas</h2>
+              <span className="text-xs font-medium text-ink-faint">Bogotá · {zones.length} zonas</span>
+            </div>
+            <ZoneMap zones={mapZones} />
+            <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs font-medium text-ink-soft">
+              {(["none", "low", "high", "critical"] as const).map((k) => {
+                const t = bonusTier(
+                  k === "none" ? 0 : k === "low" ? 1000 : k === "high" ? 2000 : 3000,
+                );
+                return (
+                  <span key={k} className="inline-flex items-center gap-1.5">
+                    <span className={`h-2.5 w-2.5 rounded-full ${t.dot}`} />
+                    {t.label}
+                  </span>
+                );
+              })}
+            </div>
+          </section>
+
+          <section className="rise rounded-3xl border border-line bg-card p-5 shadow-soft" style={{ animationDelay: "200ms" }}>
+            <div className="mb-1 flex items-center justify-between">
+              <h2 className="font-display text-lg font-bold text-ink">Zonas por bono</h2>
+              <span className="text-xs font-medium text-ink-faint">mayor incentivo primero</span>
+            </div>
+            <ul className="divide-y divide-line">
+              {sorted.map((z) => {
+                const tier = bonusTier(z.recommended_bonus_cop);
+                return (
+                  <li key={z.zone_id}>
+                    <Link
+                      href={`/zones/${z.zone_id}`}
+                      className="group -mx-2 flex items-center gap-3 rounded-2xl px-2 py-3 transition-colors hover:bg-brand-50"
                     >
-                      <td className="px-4 py-3">
-                        <Link
-                          href={`/zones/${z.zone_id}`}
-                          className="flex items-center gap-2 font-medium hover:underline"
-                        >
-                          <span className={`h-2.5 w-2.5 rounded-full ${tier.dot}`} />
-                          {z.name}
-                        </Link>
-                      </td>
-                      <td className="px-4 py-3 text-white/60">{rainLabel(z.rain_intensity)}</td>
-                      <td className={`px-4 py-3 text-right font-semibold ${tier.text}`}>
-                        {formatBonus(z.recommended_bonus_cop)}
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <StatusBadge z={z} />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      </div>
-    </main>
+                      <span className={`h-9 w-1.5 shrink-0 rounded-full ${tier.dot}`} />
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate font-semibold text-ink">{z.name}</div>
+                        <div className="text-xs text-ink-soft">{rainLabel(z.rain_intensity)}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className={`font-display tabular text-lg font-extrabold leading-none ${tier.text}`}>
+                          {formatBonus(z.recommended_bonus_cop)}
+                        </div>
+                        <div className="mt-1 flex justify-end">
+                          <StatusBadge z={z} />
+                        </div>
+                      </div>
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-4 w-4 shrink-0 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-brand"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        aria-hidden
+                      >
+                        <path d="m9 6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        </div>
+      </main>
+    </div>
   );
 }
 
-function ConnDot({ status }: { status: "connecting" | "online" | "offline" }) {
-  const color =
-    status === "online" ? "bg-sky-400" : status === "connecting" ? "bg-amber-400" : "bg-red-400";
-  return <span className={`inline-block h-2 w-2 rounded-full ${color}`} title={status} />;
+function HeroChip({ label, value, strong }: { label: string; value: string; strong?: boolean }) {
+  return (
+    <div
+      className={`rounded-2xl px-3.5 py-2 backdrop-blur ${
+        strong ? "bg-white text-brand-700" : "bg-white/15 text-white"
+      }`}
+    >
+      <div className={`text-[11px] font-semibold uppercase tracking-wide ${strong ? "text-brand-600/80" : "text-white/80"}`}>
+        {label}
+      </div>
+      <div className="font-display tabular text-lg font-extrabold leading-tight">{value}</div>
+    </div>
+  );
 }
 
-function Kpi({ label, value, accent }: { label: string; value: string; accent?: string }) {
+function Kpi({
+  i,
+  label,
+  value,
+  hint,
+  accent,
+}: {
+  i: number;
+  label: string;
+  value: string;
+  hint: string;
+  accent?: string;
+}) {
   return (
-    <div className="rounded-xl bg-white/[0.03] px-4 py-3 ring-1 ring-white/10">
-      <div className="text-xs text-white/40">{label}</div>
-      <div className={`mt-1 text-2xl font-semibold ${accent ?? ""}`}>{value}</div>
+    <div
+      className="rise rounded-3xl border border-line bg-card p-5 shadow-soft transition-transform hover:-translate-y-0.5"
+      style={{ animationDelay: `${i * 70 + 40}ms` }}
+    >
+      <div className="text-xs font-semibold uppercase tracking-wide text-ink-soft">{label}</div>
+      <div className={`font-display tabular mt-2 text-3xl font-extrabold leading-none ${accent ?? "text-ink"}`}>
+        {value}
+      </div>
+      <div className="mt-1.5 text-xs text-ink-faint">{hint}</div>
+    </div>
+  );
+}
+
+/** Deterministic diagonal rain streaks — no Math.random (avoids hydration drift). */
+function RainBackdrop() {
+  const streaks = Array.from({ length: 26 }, (_, i) => {
+    const left = (i * 37) % 100;
+    const delay = (i % 13) * 0.18;
+    const dur = 0.9 + ((i * 7) % 10) * 0.09;
+    const h = 22 + ((i * 5) % 5) * 8;
+    return { left, delay, dur, h };
+  });
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-50" aria-hidden>
+      {streaks.map((s, i) => (
+        <span
+          key={i}
+          className="rain-streak absolute top-0 w-px bg-linear-to-b from-transparent via-white to-transparent"
+          style={{
+            left: `${s.left}%`,
+            height: `${s.h}px`,
+            animationDelay: `${s.delay}s`,
+            animationDuration: `${s.dur}s`,
+            transform: "rotate(14deg)",
+          }}
+        />
+      ))}
     </div>
   );
 }

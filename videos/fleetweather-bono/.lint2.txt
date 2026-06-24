@@ -1,0 +1,42 @@
+◆  Linting fleetweather-bono/13 files
+
+  ✗ [index.html] multiple_root_compositions: Multiple root-level HTML files with data-composition-id: caption-skin.html, index.html. The runtime may discover both as entry points, causing duplicate audio playback.
+    Fix: A project should have exactly one root index.html with data-composition-id. Remove or rename extra files.
+  ✗ [compositions/frames/01-hook.html] root_missing_composition_id: Root composition is missing `data-composition-id`.
+    Fix: Add a stable `data-composition-id` to the entry composition wrapper.
+  ✗ [compositions/frames/01-hook.html] root_missing_dimensions: Root composition is missing `data-width` or `data-height`.
+    Fix: Set numeric `data-width` and `data-height` on the entry composition root.
+  ⚠ [compositions/frames/01-hook.html] overlapping_gsap_tweens: GSAP tweens overlap on "__unresolved__" for p between 3.20s and 6.00s.
+    Fix: Shorten the earlier tween, move the later tween, or add `overwrite: "auto"`.
+  ✗ [compositions/frames/02-pain-double.html] root_missing_composition_id: Root composition is missing `data-composition-id`.
+    Fix: Add a stable `data-composition-id` to the entry composition wrapper.
+  ✗ [compositions/frames/02-pain-double.html] root_missing_dimensions: Root composition is missing `data-width` or `data-height`.
+    Fix: Set numeric `data-width` and `data-height` on the entry composition root.
+  ⚠ [compositions/frames/02-pain-double.html] composition_file_too_large: This HTML composition file has 325 lines. Smaller sub-compositions are easier to read, iterate on, and diff.
+    Fix: Split this sub-composition further into smaller .html files, then mount them from the parent with data-composition-src so each file stays small enough to inspect, revise, and validate independently.
+  ✗ [compositions/frames/03-pain-today.html] root_missing_composition_id: Root composition is missing `data-composition-id`.
+    Fix: Add a stable `data-composition-id` to the entry composition wrapper.
+  ✗ [compositions/frames/03-pain-today.html] root_missing_dimensions: Root composition is missing `data-width` or `data-height`.
+    Fix: Set numeric `data-width` and `data-height` on the entry composition root.
+  ⚠ [compositions/frames/03-pain-today.html] overlapping_gsap_tweens: GSAP tweens overlap on ".labels" for scale between 0.00s and 0.12s.
+    Fix: Shorten the earlier tween, move the later tween, or add `overwrite: "auto"`.
+  ✗ [compositions/frames/04-solution.html] root_missing_composition_id: Root composition is missing `data-composition-id`.
+    Fix: Add a stable `data-composition-id` to the entry composition wrapper.
+  ✗ [compositions/frames/04-solution.html] root_missing_dimensions: Root composition is missing `data-width` or `data-height`.
+    Fix: Set numeric `data-width` and `data-height` on the entry composition root.
+  ✗ [compositions/frames/05-flow-overview.html] root_missing_composition_id: Root composition is missing `data-composition-id`.
+    Fix: Add a stable `data-composition-id` to the entry composition wrapper.
+  ✗ [compositions/frames/05-flow-overview.html] root_missing_dimensions: Root composition is missing `data-width` or `data-height`.
+    Fix: Set numeric `data-width` and `data-height` on the entry composition root.
+  ⚠ [compositions/frames/05-flow-overview.html] overlapping_gsap_tweens: GSAP tweens overlap on "#step-1, #step-2, #step-3, #step-4" for x, scale between 0.00s and 0.45s.
+    Fix: Shorten the earlier tween, move the later tween, or add `overwrite: "auto"`.
+  ⚠ [compositions/frames/05-flow-overview.html] overlapping_gsap_tweens: GSAP tweens overlap on "__unresolved__" for scale between 0.00s and 0.14s.
+    Fix: Shorten the earlier tween, move the later tween, or add `overwrite: "auto"`.
+  ⚠ [compositions/frames/06-step1-ingesta.html] overlapping_gsap_tweens: GSAP tweens overlap on "#node" for scale between 4.72s and 4.72s.
+    Fix: Shorten the earlier tween, move the later tween, or add `overwrite: "auto"`.
+  ✗ [compositions/frames/12-closing.html] root_missing_composition_id: Root composition is missing `data-composition-id`.
+    Fix: Add a stable `data-composition-id` to the entry composition wrapper.
+  ✗ [compositions/frames/12-closing.html] root_missing_dimensions: Root composition is missing `data-width` or `data-height`.
+    Fix: Set numeric `data-width` and `data-height` on the entry composition root.
+
+◇  13 error(s), 6 warning(s)

@@ -1,0 +1,402 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- head is metadata only; the HyperFrames runtime clones ONLY <template> contents -->
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: relative;
+          width: 1920px;
+          height: 1080px;
+          overflow: hidden;
+          background: #ffffff;
+          font-family: "Inter", sans-serif;
+        }
+
+        /* ── micro-camera layer (slow push under the whole shot) ── */
+        .camera {
+          position: absolute;
+          inset: 0;
+          transform-origin: 38% 42%;
+          will-change: transform;
+        }
+
+        /* ── rain layer (behind everything, faint blue dash-flow) ── */
+        .rain {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+        }
+        .rain svg {
+          width: 100%;
+          height: 100%;
+          display: block;
+        }
+        .rain line {
+          stroke: #3b82f6;
+          stroke-width: 2;
+          stroke-linecap: round;
+          stroke-dasharray: 26 30;
+        }
+
+        /* ── content frame (keep-out: everything in top ~83%, y <= 896) ── */
+        .content {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          box-sizing: border-box;
+          padding: 96px 160px;
+        }
+
+        /* brand cluster — supporting, top-left */
+        .brand {
+          position: absolute;
+          left: 160px;
+          top: 110px;
+          display: flex;
+          flex-direction: column;
+          gap: 22px;
+          will-change: transform;
+        }
+        .accent-line {
+          width: 60px;
+          height: 4px;
+          border-radius: 2px;
+          background: #ff441f;
+          transform-origin: left center;
+          will-change: transform;
+        }
+        .brand-row {
+          display: flex;
+          align-items: center;
+          gap: 22px;
+        }
+        .logo {
+          height: 64px;
+          width: auto;
+          display: block;
+          will-change: transform;
+        }
+        .eyebrow {
+          font-family: "Poppins", sans-serif;
+          font-weight: 600;
+          font-size: 17px;
+          letter-spacing: 0.16em;
+          text-transform: uppercase;
+          color: #ff441f;
+          white-space: nowrap;
+        }
+
+        /* headline — the assembled hero line */
+        .headline-wrap {
+          position: absolute;
+          left: 160px;
+          top: 360px;
+          width: 1320px;
+        }
+        .headline {
+          font-family: "Poppins", sans-serif;
+          font-weight: 700;
+          font-size: 138px;
+          line-height: 1.08;
+          letter-spacing: -0.02em;
+          color: #1a1a1a;
+          margin: 0;
+          /* fixed-height box so the discrete word assembly doesn't reflow neighbors */
+          min-height: 320px;
+        }
+        .headline .accent-word {
+          color: #ff441f;
+        }
+        .caret {
+          display: inline-block;
+          width: 8px;
+          height: 0.92em;
+          margin-left: 14px;
+          vertical-align: text-bottom;
+          background: #ff441f;
+          transform: translateY(6px);
+        }
+
+        /* subordinate cue under headline */
+        .subcue {
+          position: absolute;
+          left: 162px;
+          top: 720px;
+          display: flex;
+          align-items: center;
+          gap: 18px;
+          font-family: "Inter", sans-serif;
+          font-weight: 400;
+          font-size: 26px;
+          color: #5a5a60;
+          will-change: transform;
+        }
+        .subcue .drop {
+          width: 16px;
+          height: 16px;
+          display: block;
+        }
+        .subcue .drop svg {
+          width: 100%;
+          height: 100%;
+          display: block;
+        }
+      </style>
+
+      <div id="root" data-composition-id="01-hook" data-width="1920" data-height="1080" data-duration="6">
+        <!-- RAIN — full-shot dash-flow, behind content (track 0) -->
+        <div
+          class="rain clip"
+          id="rain"
+          data-start="0"
+          data-duration="6"
+          data-track-index="0"
+        >
+          <div class="camera" id="rain-camera">
+            <svg viewBox="0 0 1920 1080" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- diagonal rain lines; each flows via strokeDashoffset (svg-icon-enrichment: dash-flow) -->
+              <line class="raindrop" x1="220" y1="-120" x2="100" y2="380" />
+              <line class="raindrop" x1="430" y1="-160" x2="310" y2="340" />
+              <line class="raindrop" x1="640" y1="-100" x2="520" y2="400" />
+              <line class="raindrop" x1="850" y1="-180" x2="730" y2="320" />
+              <line class="raindrop" x1="1060" y1="-120" x2="940" y2="380" />
+              <line class="raindrop" x1="1270" y1="-150" x2="1150" y2="350" />
+              <line class="raindrop" x1="1480" y1="-110" x2="1360" y2="390" />
+              <line class="raindrop" x1="1690" y1="-170" x2="1570" y2="330" />
+              <line class="raindrop" x1="1900" y1="-130" x2="1780" y2="370" />
+              <line class="raindrop" x1="320" y1="220" x2="200" y2="720" />
+              <line class="raindrop" x1="560" y1="180" x2="440" y2="680" />
+              <line class="raindrop" x1="780" y1="240" x2="660" y2="740" />
+              <line class="raindrop" x1="1180" y1="200" x2="1060" y2="700" />
+              <line class="raindrop" x1="1420" y1="240" x2="1300" y2="740" />
+              <line class="raindrop" x1="1640" y1="190" x2="1520" y2="690" />
+              <line class="raindrop" x1="1860" y1="230" x2="1740" y2="730" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- CONTENT — brand + headline (track 1) -->
+        <div
+          class="content clip"
+          id="content"
+          data-start="0"
+          data-duration="6"
+          data-track-index="1"
+        >
+          <div class="camera" id="content-camera">
+            <!-- brand cluster -->
+            <div class="brand" id="brand">
+              <div class="accent-line" id="accent-line"></div>
+              <div class="brand-row">
+                <img class="logo" id="logo" src="../../assets/rappi-logo.svg" alt="Rappi" />
+                <span class="eyebrow" id="eyebrow">FLEETWEATHER · BONO DINÁMICO POR LLUVIA</span>
+              </div>
+            </div>
+
+            <!-- headline assembled word-by-word -->
+            <div class="headline-wrap">
+              <h1 class="headline" id="headline"></h1>
+            </div>
+
+            <!-- subordinate cue -->
+            <div class="subcue" id="subcue">
+              <span class="drop">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 2 C12 2 5 11 5 16 a7 7 0 0 0 14 0 C19 11 12 2 12 2 Z" fill="#3b82f6" />
+                </svg>
+              </span>
+              <span>El clima desbalancea la operación.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        const TOTAL = 6;
+
+        /* ─────────────────────────────────────────────
+           ENTRANCE — brand cluster lands top-left
+           ───────────────────────────────────────────── */
+        // accent-line wipes in
+        tl.fromTo(
+          "#accent-line",
+          { scaleX: 0, opacity: 0 },
+          { scaleX: 1, opacity: 1, duration: 0.5, ease: "power3.out" },
+          0.1
+        );
+        // logo rises in
+        tl.fromTo(
+          "#logo",
+          { opacity: 0, y: 18, scale: 0.94 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.6, ease: "power3.out" },
+          0.25
+        );
+        // eyebrow fades in
+        tl.fromTo(
+          "#eyebrow",
+          { opacity: 0, x: -16 },
+          { opacity: 1, x: 0, duration: 0.55, ease: "power3.out" },
+          0.45
+        );
+
+        /* ─────────────────────────────────────────────
+           DEVELOPMENT — headline assembles word-by-word
+           (discrete-text-sequence: replace whole text states
+            at time thresholds; instant jumps, no per-state CSS transition)
+           ───────────────────────────────────────────── */
+        const ACCENT_OPEN = '<span class="accent-word">';
+        const ACCENT_CLOSE = "</span>";
+        const CARET = '<span class="caret" id="caret"></span>';
+
+        // Each entry shows from its t until the next entry's t.
+        // "rompe" is the emphasis word → wrapped in accent color.
+        const SEQUENCE = [
+          { t: 0.0, html: "" + CARET },
+          { t: 0.95, html: "Cuando" + CARET },
+          { t: 1.25, html: "Cuando llueve," + CARET },
+          { t: 1.7, html: "Cuando llueve,<br>el" + CARET },
+          { t: 1.95, html: "Cuando llueve,<br>el delivery" + CARET },
+          { t: 2.35, html: "Cuando llueve,<br>el delivery se" + CARET },
+          {
+            t: 2.7,
+            html:
+              "Cuando llueve,<br>el delivery se " +
+              ACCENT_OPEN +
+              "rompe." +
+              ACCENT_CLOSE +
+              CARET,
+          },
+        ];
+
+        function htmlAt(time) {
+          for (let i = SEQUENCE.length - 1; i >= 0; i--) {
+            if (time >= SEQUENCE[i].t) return SEQUENCE[i].html;
+          }
+          return "" + CARET;
+        }
+
+        const headlineEl = document.getElementById("headline");
+        let lastHtml = null;
+        const seqDriver = { t: 0 };
+        tl.to(
+          seqDriver,
+          {
+            t: TOTAL,
+            duration: TOTAL,
+            ease: "none",
+            onUpdate: () => {
+              const next = htmlAt(seqDriver.t);
+              if (next !== lastHtml) {
+                headlineEl.innerHTML = next;
+                lastHtml = next;
+              }
+            },
+          },
+          0
+        );
+
+        // emphasis hit when "rompe." lands (development climax)
+        tl.fromTo(
+          "#headline",
+          { scale: 1 },
+          { scale: 1.018, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 },
+          2.7
+        );
+
+        // deterministic caret blink (sin-based, not CSS) across the shot
+        const blink = { p: 0 };
+        tl.to(
+          blink,
+          {
+            p: Math.PI * 2 * 8, // 8 blink cycles over 6s ≈ 0.75s/cycle
+            duration: TOTAL,
+            ease: "none",
+            onUpdate: () => {
+              const c = document.getElementById("caret");
+              if (c) c.style.opacity = Math.sin(blink.p) > 0 ? "1" : "0";
+            },
+          },
+          0
+        );
+
+        // sub-cue fades up as the headline resolves
+        tl.fromTo(
+          "#subcue",
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+          3.0
+        );
+
+        /* ─────────────────────────────────────────────
+           RAIN — svg-icon-enrichment (dash-flow)
+           strokeDashoffset advances linearly the whole shot.
+           dash period = 26 + 30 = 56; total offset = -560 (10 periods,
+           integer multiple → no phase jump at the end).
+           ───────────────────────────────────────────── */
+        const drops = document.querySelectorAll(".raindrop");
+        const flow = { o: 0 };
+        tl.fromTo(
+          flow,
+          { o: 0 },
+          {
+            o: -560,
+            duration: TOTAL,
+            ease: "none",
+            onUpdate: () => {
+              const off = String(flow.o);
+              drops.forEach((d) => {
+                d.style.strokeDashoffset = off;
+              });
+            },
+          },
+          0
+        );
+        // rain fades in softly under the brand entrance
+        tl.fromTo("#rain", { opacity: 0 }, { opacity: 0.55, duration: 0.8, ease: "power2.out" }, 0);
+
+        /* ─────────────────────────────────────────────
+           SETTLE — sine-wave-loop idle (logo breathes) + slow push camera
+           ───────────────────────────────────────────── */
+        // logo breathes (sin(0)=0 → no jump from entry resting state)
+        const IDLE_START = 3.2;
+        const IDLE_DUR = TOTAL - IDLE_START;
+        const logoBreath = { p: 0 };
+        tl.to(
+          logoBreath,
+          {
+            p: Math.PI * 2 * 1.6, // ~1.6 cycles over 2.8s ≈ 1.75s/breath
+            duration: IDLE_DUR,
+            ease: "none",
+            onUpdate: () => {
+              const s = 1 + Math.sin(logoBreath.p) * 0.02;
+              const y = Math.sin(logoBreath.p) * 2.5;
+              const el = document.getElementById("logo");
+              if (el) el.style.transform = `translateY(${y}px) scale(${s})`;
+            },
+          },
+          IDLE_START
+        );
+
+        // slow push camera under the whole shot (macro move ~1.03x)
+        tl.fromTo(
+          ["#content-camera", "#rain-camera"],
+          { scale: 1, x: 0, y: 0 },
+          { scale: 1.03, duration: TOTAL, ease: "power1.inOut" },
+          0
+        );
+
+        window.__timelines["01-hook"] = tl;
+      </script>
+    </template>
+  </body>
+</html>

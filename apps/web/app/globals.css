@@ -1,20 +1,148 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────
+   Rappi Ops — design tokens
+   Brand orange #ff441f (Rappi's own theme-color) on warm paper.
+   ───────────────────────────────────────────────────────────── */
 :root {
-  --background: #08080c;
-  --foreground: #e7e7ea;
+  --background: #fbf3ee;
+  --foreground: #1c1410;
+}
+
+@theme {
+  /* Brand */
+  --color-brand: #ff441f;
+  --color-brand-600: #e6320f;
+  --color-brand-700: #c1260a;
+  --color-brand-100: #ffe3da;
+  --color-brand-50: #fff2ee;
+  --color-sun: #ffc400;
+
+  /* Surfaces & ink */
+  --color-paper: #fbf3ee;
+  --color-card: #ffffff;
+  --color-ink: #1c1410;
+  --color-ink-soft: #6b5d54;
+  --color-ink-faint: #a99c92;
+  --color-line: #efe3da;
+
+  /* Fonts (wired to next/font CSS vars) */
+  --font-sans: var(--font-jakarta);
+  --font-display: var(--font-bricolage);
+  --font-mono: var(--font-dmmono);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 body {
-  background: radial-gradient(120% 80% at 50% -10%, #14141f 0%, var(--background) 60%);
-  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-sans), system-ui, sans-serif;
+  background-color: var(--background);
+  /* Warm Rappi glow blooming from the top, fading into paper. */
+  background-image:
+    radial-gradient(70% 55% at 50% -8%, rgba(255, 68, 31, 0.16) 0%, transparent 60%),
+    radial-gradient(50% 40% at 92% 4%, rgba(255, 196, 0, 0.12) 0%, transparent 55%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* Faint grain for depth — keeps large fills from looking flat. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.045'/%3E%3C/svg%3E");
+}
+
+/* ── Display type ──────────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  letter-spacing: -0.02em;
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Entrance choreography ─────────────────────────────────── */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.rise {
+  animation: rise 0.62s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+}
+
+/* ── Live status dot ──────────────────────────────────────── */
+@keyframes ping-soft {
+  0% {
+    transform: scale(1);
+    opacity: 0.55;
+  }
+  70%,
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+.ping-soft::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: inherit;
+  animation: ping-soft 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* ── Hero rain ─────────────────────────────────────────────── */
+@keyframes rain-fall {
+  0% {
+    transform: translateY(-120%);
+  }
+  100% {
+    transform: translateY(420%);
+  }
+}
+.rain-streak {
+  animation: rain-fall linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rain-streak {
+    animation: none;
+    opacity: 0.2;
+  }
+}
+
+/* Soft elevated card shadow, warm-tinted. */
+.shadow-soft {
+  box-shadow:
+    0 1px 2px rgba(60, 30, 12, 0.04),
+    0 12px 28px -12px rgba(120, 50, 20, 0.18);
+}
+.shadow-pop {
+  box-shadow:
+    0 2px 6px rgba(255, 68, 31, 0.14),
+    0 22px 48px -16px rgba(255, 68, 31, 0.42);
 }

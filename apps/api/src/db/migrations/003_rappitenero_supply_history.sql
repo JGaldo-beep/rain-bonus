@@ -1,14 +1,14 @@
--- Historical Rappitenero login rate by hour/zone/rain as a hypertable (SPEC §6.1).
+-- Historical Rappitenero login rate by hour/zone/rain (SPEC §6.1). Plain Postgres (ADR-0006).
 CREATE TABLE IF NOT EXISTS rappitenero_supply_history (
-  id                    UUID NOT NULL DEFAULT gen_random_uuid(),
+  id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   zone_id               UUID NOT NULL REFERENCES zones(id),
   hour                  SMALLINT NOT NULL,
   rain_intensity        TEXT NOT NULL,
   active_rappiteneros   INTEGER NOT NULL,
   baseline_rappiteneros INTEGER NOT NULL,
   timestamp             TIMESTAMPTZ NOT NULL,
-  created_at            TIMESTAMPTZ DEFAULT NOW(),
-  PRIMARY KEY (id, timestamp)
+  created_at            TIMESTAMPTZ DEFAULT NOW()
 );
 
-SELECT create_hypertable('rappitenero_supply_history', 'timestamp', if_not_exists => TRUE);
+CREATE INDEX IF NOT EXISTS idx_supply_history_zone_ts
+  ON rappitenero_supply_history (zone_id, timestamp DESC);

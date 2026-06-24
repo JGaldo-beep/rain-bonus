@@ -36,7 +36,7 @@ export function ZoneMap({ zones }: { zones: MapZone[] }) {
   return (
     <svg
       viewBox={`0 0 ${W} ${H}`}
-      className="w-full h-auto rounded-xl bg-white/[0.02] ring-1 ring-white/10"
+      className="h-auto w-full rounded-2xl ring-1 ring-line"
       role="img"
       aria-label="Mapa de zonas de Bogotá por nivel de bono"
     >
@@ -45,11 +45,16 @@ export function ZoneMap({ zones }: { zones: MapZone[] }) {
           <path
             d="M 40 0 L 0 0 0 40"
             fill="none"
-            stroke="rgba(255,255,255,0.04)"
+            stroke="rgba(28,20,16,0.05)"
             strokeWidth="1"
           />
         </pattern>
+        <radialGradient id="mapglow" cx="50%" cy="0%" r="90%">
+          <stop offset="0%" stopColor="#fff2ee" />
+          <stop offset="100%" stopColor="#fdfaf8" />
+        </radialGradient>
       </defs>
+      <rect width={W} height={H} fill="url(#mapglow)" />
       <rect width={W} height={H} fill="url(#grid)" />
 
       {zones.map((z) => {
@@ -58,24 +63,25 @@ export function ZoneMap({ zones }: { zones: MapZone[] }) {
         return (
           <Link key={z.id} href={`/zones/${z.id}`}>
             <g className="cursor-pointer">
-              <circle cx={x} cy={y} r={26} fill={z.hex} opacity={0.16} />
+              <circle cx={x} cy={y} r={26} fill={z.hex} opacity={0.14} />
               <circle cx={x} cy={y} r={9} fill={z.hex} />
-              <circle cx={x} cy={y} r={9} fill="none" stroke="white" strokeOpacity={0.5} />
+              <circle cx={x} cy={y} r={9} fill="none" stroke="white" strokeWidth={2} />
               <text
                 x={x}
                 y={y - 18}
                 textAnchor="middle"
                 fontSize="13"
-                fontWeight="600"
-                fill="#e7e7ea"
+                fontWeight="700"
+                fill="#1c1410"
               >
                 {z.name}
               </text>
               <text
                 x={x}
-                y={y + 30}
+                y={y + 31}
                 textAnchor="middle"
                 fontSize="11"
+                fontWeight="600"
                 fill={z.hex}
               >
                 {z.bonusLabel}

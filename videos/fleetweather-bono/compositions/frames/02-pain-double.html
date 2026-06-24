@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Frame 02 — pain-double</title>
+    <!--
+      HyperFrames sub-composition. ADAPT of blueprint comparison-split-cards.
+      Base: comparison-split-cards · Keep: two mirror cards entering from opposite
+      sides to the center, two-layer .card-pos/.card-tilt, one shared scene-ticker.
+      Depart: not two products — left "DEMANDA ↑" (orange up-arrow, pedidos count UP),
+      right "OFERTA ↓" (data-red down-arrow, Rappiteneros count DOWN); plus a center
+      development band "BRECHA" that widens between the two cards.
+
+      Shot (8s):
+        entrance     0.10–1.60  title eyebrow drops; two cards split in from the wings
+        development  1.60–6.20  counters count (up / down) with dynamic scale; arrow
+                                strokes dash-flow (svg-icon-enrichment); BRECHA band
+                                widens between the cards and its label assembles
+        settle       6.20–8.00  BRECHA micro-pulse + slow push under the whole shot
+      No exit (non-final frame). One paused timeline. All style/script inside <template>.
+    -->
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+          overflow: hidden;
+          background: #ffffff;
+          font-family: "Inter", sans-serif;
+          color: #1a1a1a;
+        }
+
+        /* macro-camera layer — slow push sustains the whole shot */
+        .stage {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          will-change: transform;
+          transform-origin: 50% 46%;
+        }
+
+        /* soft orange-tint atmosphere, very faint, behind everything */
+        .atmosphere {
+          position: absolute;
+          inset: 0;
+          background:
+            radial-gradient(ellipse at 18% 44%, rgba(255, 68, 31, 0.05), transparent 42%),
+            radial-gradient(ellipse at 82% 44%, rgba(229, 64, 42, 0.04), transparent 42%);
+          pointer-events: none;
+        }
+
+        /* ---------- header (eyebrow) ---------- */
+        .eyebrow {
+          position: absolute;
+          top: 92px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-family: "Poppins", system-ui, sans-serif;
+          font-size: 26px;
+          font-weight: 600;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          color: #ff441f;
+          white-space: nowrap;
+          will-change: transform, opacity;
+        }
+        .eyebrow .accent-line {
+          display: block;
+          width: 60px;
+          height: 4px;
+          border-radius: 2px;
+          background: #ff441f;
+          margin: 0 auto 20px;
+        }
+
+        /* ---------- cards row ---------- */
+        .cards-row {
+          position: absolute;
+          top: 46%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          display: flex;
+          align-items: center;
+          gap: 360px; /* the gap the BRECHA band lives inside */
+          perspective: 1600px;
+          perspective-origin: 50% 46%;
+          transform-style: preserve-3d;
+        }
+
+        .card {
+          transform-style: preserve-3d;
+        }
+        .card-pos {
+          transform-style: preserve-3d;
+          will-change: transform, opacity;
+        }
+        .card-tilt {
+          transform-style: preserve-3d;
+          will-change: transform;
+        }
+        .card-left .card-tilt {
+          transform-origin: 100% 50%;
+        }
+        .card-right .card-tilt {
+          transform-origin: 0% 50%;
+        }
+
+        .card-surface {
+          width: 520px;
+          min-height: 540px;
+          padding: 56px 52px;
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 22px;
+          border-radius: 14px;
+          background: rgba(255, 68, 31, 0.04);
+          border: 1.5px solid rgba(255, 68, 31, 0.2);
+        }
+
+        .card-eyebrow {
+          font-family: "Poppins", system-ui, sans-serif;
+          font-size: 28px;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color: #5a5a60;
+        }
+
+        /* directional arrow icon */
+        .arrow-svg {
+          width: 132px;
+          height: 132px;
+        }
+
+        .counter {
+          font-family: "Poppins", system-ui, sans-serif;
+          font-weight: 700;
+          line-height: 1;
+          letter-spacing: -0.02em;
+          font-variant-numeric: tabular-nums;
+          color: #ff441f;
+          /* font-size tweened by GSAP (counting-dynamic-scale) */
+          font-size: 96px;
+        }
+        .card-right .counter {
+          color: #1a1a1a; /* supply side stays near-black; red lives only in the arrow cue */
+        }
+
+        .counter-label {
+          font-family: "Poppins", system-ui, sans-serif;
+          font-size: 24px;
+          font-weight: 500;
+          letter-spacing: 0.02em;
+          color: #5a5a60;
+          text-align: center;
+          max-width: 380px;
+        }
+
+        /* ---------- center BRECHA band ---------- */
+        .brecha {
+          position: absolute;
+          top: 46%;
+          left: 50%;
+          transform: translate(-50%, -50%) scaleX(0.001);
+          transform-origin: 50% 50%;
+          width: 300px;
+          height: 360px;
+          border-radius: 14px;
+          background: repeating-linear-gradient(
+            -45deg,
+            rgba(255, 68, 31, 0.1) 0px,
+            rgba(255, 68, 31, 0.1) 14px,
+            rgba(255, 68, 31, 0.03) 14px,
+            rgba(255, 68, 31, 0.03) 28px
+          );
+          border-left: 1.5px solid rgba(255, 68, 31, 0.28);
+          border-right: 1.5px solid rgba(255, 68, 31, 0.28);
+          will-change: transform, opacity;
+          opacity: 0;
+        }
+        .brecha-label {
+          position: absolute;
+          top: 46%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-family: "Poppins", system-ui, sans-serif;
+          font-size: 64px;
+          font-weight: 700;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          color: #ff441f;
+          white-space: nowrap;
+          will-change: transform, opacity;
+          opacity: 0;
+          text-shadow: 0 0 28px rgba(255, 255, 255, 0.9);
+        }
+      </style>
+
+      <div
+        id="root"
+        data-composition-id="02-pain-double"
+        data-width="1920"
+        data-height="1080"
+        data-duration="8"
+      >
+        <div class="stage clip" id="stage" data-start="0" data-duration="8" data-track-index="1">
+          <div class="atmosphere"></div>
+
+          <!-- eyebrow header -->
+          <div class="eyebrow" id="eyebrow">
+            <span class="accent-line"></span>
+            CUANDO LLUEVE
+          </div>
+
+          <!-- cards -->
+          <div class="cards-row">
+            <!-- LEFT — DEMANDA ↑ -->
+            <div class="card card-left" id="card-left">
+              <div class="card-pos">
+                <div class="card-tilt">
+                  <div class="card-surface">
+                    <div class="card-eyebrow">DEMANDA</div>
+                    <svg
+                      class="arrow-svg"
+                      id="arrow-up"
+                      viewBox="0 0 120 120"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      stroke="#ff441f"
+                      stroke-width="9"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <line id="arrow-up-shaft" x1="60" y1="96" x2="60" y2="30" />
+                      <polyline points="32,54 60,26 88,54" />
+                    </svg>
+                    <div class="counter" id="counter-demanda">0</div>
+                    <div class="counter-label">los usuarios piden más</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- RIGHT — OFERTA ↓ -->
+            <div class="card card-right" id="card-right">
+              <div class="card-pos">
+                <div class="card-tilt">
+                  <div class="card-surface">
+                    <div class="card-eyebrow">OFERTA</div>
+                    <svg
+                      class="arrow-svg"
+                      id="arrow-down"
+                      viewBox="0 0 120 120"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      stroke="#e5402a"
+                      stroke-width="9"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      aria-hidden="true"
+                    >
+                      <line id="arrow-down-shaft" x1="60" y1="24" x2="60" y2="90" />
+                      <polyline points="32,66 60,94 88,66" />
+                    </svg>
+                    <div class="counter" id="counter-oferta">0</div>
+                    <div class="counter-label">menos Rappiteneros conectados</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- center development: the widening gap -->
+          <div class="brecha" id="brecha"></div>
+          <div class="brecha-label" id="brecha-label">BRECHA</div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        (function () {
+          const TOTAL_DUR = 8.0;
+
+          const T = {
+            // entrance
+            eyebrowAt: 0.1,
+            eyebrowDur: 0.6,
+            leftAt: 0.5,
+            rightAt: 0.75,
+            entryDur: 0.9,
+            slideDist: 460,
+            baseTilt: 14,
+            tiltOvershoot: 6,
+            entryScale: 0.82,
+
+            // development
+            countAt: 1.7,
+            countDur: 2.4,
+            demandaTarget: 1280, // pedidos (count UP)
+            ofertaTarget: 340, // Rappiteneros (count DOWN from a high start)
+            ofertaStart: 920,
+            counterStartSize: 64,
+            counterEndSizeUp: 110,
+            counterEndSizeDown: 92,
+
+            brechaAt: 2.0,
+            brechaDur: 1.8,
+            brechaScaleEnd: 1.0,
+            brechaLabelAt: 3.4,
+            brechaLabelDur: 0.7,
+
+            // idle / settle floats
+            floatYSpeed: 0.55,
+            floatYAmp: 6,
+            floatRSpeed: 0.42,
+            floatRAmp: 1,
+            // BRECHA settle micro-pulse
+            pulseStart: 6.2,
+            pulseSpeed: 2.4,
+            pulseAmp: 0.03,
+            // dash flow on the arrow shafts (data cue)
+            dashUpOffset: -240, // L→R style flow (upward read on vertical shaft)
+            dashDownOffset: 240,
+          };
+
+          // ---- initial states (gsap.set before timeline) ----
+          gsap.set("#eyebrow", { opacity: 0, y: -28 });
+
+          gsap.set("#card-left .card-pos", {
+            x: -T.slideDist,
+            scale: T.entryScale,
+            opacity: 0,
+            y: 0,
+          });
+          gsap.set("#card-right .card-pos", {
+            x: T.slideDist,
+            scale: T.entryScale,
+            opacity: 0,
+            y: 0,
+          });
+          gsap.set("#card-left .card-tilt", { rotationY: T.baseTilt + T.tiltOvershoot });
+          gsap.set("#card-right .card-tilt", { rotationY: -T.baseTilt - T.tiltOvershoot });
+
+          // dash the arrow shafts so a flow can read along them (data cue)
+          const upShaft = document.getElementById("arrow-up-shaft");
+          const downShaft = document.getElementById("arrow-down-shaft");
+          upShaft.setAttribute("stroke-dasharray", "16 12");
+          downShaft.setAttribute("stroke-dasharray", "16 12");
+
+          const counterDemanda = document.getElementById("counter-demanda");
+          const counterOferta = document.getElementById("counter-oferta");
+          counterDemanda.style.fontSize = T.counterStartSize + "px";
+          counterOferta.style.fontSize = T.counterStartSize + "px";
+          counterOferta.textContent = T.ofertaStart.toLocaleString("es-CO");
+
+          // ---- timeline ----
+          window.__timelines = window.__timelines || {};
+          const tl = gsap.timeline({ paused: true });
+          window.__timelines["02-pain-double"] = tl;
+
+          /* ===== ENTRANCE ===== */
+          // eyebrow drops in from above (T-shape vs side-arriving cards)
+          tl.to(
+            "#eyebrow",
+            { opacity: 1, y: 0, duration: T.eyebrowDur, ease: "power3.out" },
+            T.eyebrowAt,
+          );
+
+          // cards split in from opposite wings; tilt settles from overshoot
+          tl.to(
+            "#card-left .card-pos",
+            { x: 0, scale: 1, opacity: 1, duration: T.entryDur, ease: "power3.out" },
+            T.leftAt,
+          );
+          tl.to(
+            "#card-left .card-tilt",
+            { rotationY: T.baseTilt, duration: T.entryDur, ease: "power3.out" },
+            T.leftAt,
+          );
+          tl.to(
+            "#card-right .card-pos",
+            { x: 0, scale: 1, opacity: 1, duration: T.entryDur, ease: "power3.out" },
+            T.rightAt,
+          );
+          tl.to(
+            "#card-right .card-tilt",
+            { rotationY: -T.baseTilt, duration: T.entryDur, ease: "power3.out" },
+            T.rightAt,
+          );
+
+          /* ===== DEVELOPMENT ===== */
+          // DEMANDA counts UP, font grows (counting-dynamic-scale)
+          const demandaState = { value: 0, fontSize: T.counterStartSize };
+          tl.to(
+            demandaState,
+            {
+              value: T.demandaTarget,
+              fontSize: T.counterEndSizeUp,
+              duration: T.countDur,
+              ease: "power3.out",
+              onUpdate: () => {
+                counterDemanda.textContent = Math.round(demandaState.value).toLocaleString("es-CO");
+                counterDemanda.style.fontSize = demandaState.fontSize + "px";
+              },
+            },
+            T.countAt,
+          );
+
+          // OFERTA counts DOWN, font grows (magnitude of loss reads bigger)
+          const ofertaState = { value: T.ofertaStart, fontSize: T.counterStartSize };
+          tl.to(
+            ofertaState,
+            {
+              value: T.ofertaTarget,
+              fontSize: T.counterEndSizeDown,
+              duration: T.countDur,
+              ease: "power3.out",
+              onUpdate: () => {
+                counterOferta.textContent = Math.round(ofertaState.value).toLocaleString("es-CO");
+                counterOferta.style.fontSize = ofertaState.fontSize + "px";
+              },
+            },
+            T.countAt,
+          );
+
+          // center BRECHA band widens between the cards (the development reveal)
+          tl.fromTo(
+            "#brecha",
+            { scaleX: 0.001, opacity: 0 },
+            {
+              scaleX: T.brechaScaleEnd,
+              opacity: 1,
+              duration: T.brechaDur,
+              ease: "power2.inOut",
+            },
+            T.brechaAt,
+          );
+          // BRECHA label assembles after the band opens
+          tl.fromTo(
+            "#brecha-label",
+            { opacity: 0, scale: 0.78 },
+            { opacity: 1, scale: 1, duration: T.brechaLabelDur, ease: "back.out(1.6)" },
+            T.brechaLabelAt,
+          );
+
+          /* ===== CONTINUOUS — shared scene-ticker (idle + camera + dash + settle pulse) ===== */
+          const leftPos = document.querySelector("#card-left .card-pos");
+          const rightPos = document.querySelector("#card-right .card-pos");
+          const leftTilt = document.querySelector("#card-left .card-tilt");
+          const rightTilt = document.querySelector("#card-right .card-tilt");
+          const stage = document.getElementById("stage");
+          const brechaLabel = document.getElementById("brecha-label");
+
+          tl.to(
+            { tick: 0 },
+            {
+              tick: 1,
+              duration: TOTAL_DUR,
+              ease: "none",
+              onUpdate: function () {
+                const t = tl.time();
+
+                // counter-phase idle bob on the two cards (sin(0)=0 ⇒ no entry fight)
+                const lY = Math.sin(t * T.floatYSpeed) * T.floatYAmp;
+                const rY = Math.sin(t * T.floatYSpeed + Math.PI) * T.floatYAmp;
+                const lR = Math.sin(t * T.floatRSpeed) * T.floatRAmp;
+                const rR = Math.sin(t * T.floatRSpeed + Math.PI) * T.floatRAmp;
+                gsap.set(leftPos, { y: lY });
+                gsap.set(rightPos, { y: rY });
+                gsap.set(leftTilt, { rotationY: T.baseTilt + lR });
+                gsap.set(rightTilt, { rotationY: -T.baseTilt + rR });
+
+                // slow macro push under the whole shot (1.0 → ~1.03)
+                const push = 1 + (t / TOTAL_DUR) * 0.03;
+                gsap.set(stage, { scale: push });
+
+                // dash-flow data cue along the arrow shafts
+                const frac = t / TOTAL_DUR;
+                upShaft.style.strokeDashoffset = String(T.dashUpOffset * frac);
+                downShaft.style.strokeDashoffset = String(T.dashDownOffset * frac);
+
+                // BRECHA settle micro-pulse (only after pulseStart)
+                if (t >= T.pulseStart) {
+                  const p = 1 + Math.sin((t - T.pulseStart) * T.pulseSpeed) * T.pulseAmp;
+                  gsap.set(brechaLabel, { scale: p });
+                }
+              },
+            },
+            0,
+          );
+        })();
+      </script>
+    </template>
+  </body>
+</html>

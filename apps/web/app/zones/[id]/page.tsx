@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getBonusProjection, getForecast, getRecommendation } from "../../../lib/api";
 import { ZoneDetailClient } from "../../../components/ZoneDetailClient";
@@ -20,12 +19,5 @@ export default async function ZoneDetailPage({
 
   if (!rec) notFound();
 
-  return (
-    <main className="mx-auto max-w-5xl px-6 py-10">
-      <Link href="/" className="text-sm text-white/50 hover:text-white">
-        ← Volver al panel
-      </Link>
-      <ZoneDetailClient initialRec={rec} forecast={forecast} projection={projection} />
-    </main>
-  );
+  return <ZoneDetailClient initialRec={rec} forecast={forecast} projection={projection} />;
 }

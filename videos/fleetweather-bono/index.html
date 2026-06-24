@@ -1,8 +1,8 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=1920, height=1080" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
     <style>
       * {
@@ -12,48 +12,83 @@
       }
       html,
       body {
-        margin: 0;
         width: 1920px;
         height: 1080px;
         overflow: hidden;
         background: #000;
       }
-      body {
-        font-family: "Inter", sans-serif;
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #FFFFFF;
       }
-      code,
-      pre,
-      .monospace {
-        font-family: "JetBrains Mono", monospace;
+      .scene {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
       }
     </style>
   </head>
   <body>
-    <div
-      id="root"
-      data-composition-id="main"
-      data-start="0"
-      data-duration="10"
-      data-width="1920"
-      data-height="1080"
-    >
-      
-      
+    <div data-hf-id="hf-b3qq" id="root" data-composition-id="main" data-start="0" data-duration="84" data-width="1920" data-height="1080">
+      <div data-hf-id="hf-3spd" id="el-01-hook" class="scene" data-composition-id="01-hook" data-composition-src="compositions/frames/01-hook.html" data-start="0" data-duration="6.5" data-track-index="0"></div>
 
-      <!--
-        Add your clips here. Example:
-        <div id="title" class="clip" data-start="0" data-duration="5" data-track-index="1"
-             style="font-size: 64px; color: #fff; padding: 40px">
-          Hello World
-        </div>
-      -->
+      <div data-hf-id="hf-b86z" id="el-02-pain-double" class="scene" data-composition-id="02-pain-double" data-composition-src="compositions/frames/02-pain-double.html" data-start="6" data-duration="8.5" data-track-index="1"></div>
+
+      <div data-hf-id="hf-sn2v" id="el-03-pain-today" class="scene" data-composition-id="03-pain-today" data-composition-src="compositions/frames/03-pain-today.html" data-start="14" data-duration="6.4" data-track-index="0"></div>
+
+      <div data-hf-id="hf-j9jv" id="el-04-solution" class="scene" data-composition-id="04-solution" data-composition-src="compositions/frames/04-solution.html" data-start="20" data-duration="7.5" data-track-index="1"></div>
+
+      <div data-hf-id="hf-8cd4" id="el-05-flow-overview" class="scene" data-composition-id="05-flow-overview" data-composition-src="compositions/frames/05-flow-overview.html" data-start="27" data-duration="7.5" data-track-index="0"></div>
+
+      <div data-hf-id="hf-nxie" id="el-06-step1-ingesta" class="scene" data-composition-id="06-step1-ingesta" data-composition-src="compositions/frames/06-step1-ingesta.html" data-start="34" data-duration="7.5" data-track-index="1"></div>
+
+      <div data-hf-id="hf-32d8" id="el-07-step2-forecast" class="scene" data-composition-id="07-step2-forecast" data-composition-src="compositions/frames/07-step2-forecast.html" data-start="41" data-duration="7.5" data-track-index="0"></div>
+
+      <div data-hf-id="hf-yivh" id="el-08-step3-bono" class="scene" data-composition-id="08-step3-bono" data-composition-src="compositions/frames/08-step3-bono.html" data-start="48" data-duration="8.4" data-track-index="1"></div>
+
+      <div data-hf-id="hf-5b2j" id="el-09-example" class="scene" data-composition-id="09-example" data-composition-src="compositions/frames/09-example.html" data-start="56" data-duration="6.5" data-track-index="0"></div>
+
+      <div data-hf-id="hf-hng5" id="el-10-step4-dashboard" class="scene" data-composition-id="10-step4-dashboard" data-composition-src="compositions/frames/10-step4-dashboard.html" data-start="62" data-duration="8.5" data-track-index="1"></div>
+
+      <div data-hf-id="hf-32nw" id="el-11-why" class="scene" data-composition-id="11-why" data-composition-src="compositions/frames/11-why.html" data-start="70" data-duration="6.5" data-track-index="0"></div>
+
+      <div data-hf-id="hf-095g" id="el-12-closing" class="scene" data-composition-id="12-closing" data-composition-src="compositions/frames/12-closing.html" data-start="76" data-duration="8" data-track-index="1"></div>
+
     </div>
 
     <script>
       window.__timelines = window.__timelines || {};
-      const tl = gsap.timeline({ paused: true });
-      // Example: tl.from("#title", { opacity: 0, y: -50, duration: 1 }, 0);
-      window.__timelines["main"] = tl;
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+      // ── frame transitions (injected by transitions.mjs) ──
+      (function () { var tl = window.__timelines["main"];
+        tl.to("#el-01-hook", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 6);
+        tl.fromTo("#el-02-pain-double", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 6);
+        tl.to("#el-02-pain-double", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 14);
+        tl.fromTo("#el-03-pain-today", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 14);
+        tl.to("#el-03-pain-today", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 20);
+        tl.fromTo("#el-04-solution", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 20);
+        tl.to("#el-04-solution", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 27);
+        tl.fromTo("#el-05-flow-overview", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 27);
+        tl.to("#el-05-flow-overview", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 34);
+        tl.fromTo("#el-06-step1-ingesta", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 34);
+        tl.to("#el-06-step1-ingesta", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 41);
+        tl.fromTo("#el-07-step2-forecast", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 41);
+        tl.to("#el-07-step2-forecast", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 48);
+        tl.fromTo("#el-08-step3-bono", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 48);
+        tl.to("#el-08-step3-bono", { scale: 2.5, opacity: 0, filter: "blur(8px)", duration: 0.4, ease: "power3.in" }, 56);
+        tl.fromTo("#el-09-example", { scale: 0.5, opacity: 0, filter: "blur(8px)" }, { scale: 1, opacity: 1, filter: "blur(0px)", duration: 0.4, ease: "power3.out" }, 56);
+        tl.to("#el-09-example", { x: -1920, duration: 0.5, ease: "power3.inOut" }, 62);
+        tl.fromTo("#el-10-step4-dashboard", { x: 1920, opacity: 1 }, { x: 0, duration: 0.5, ease: "power3.inOut" }, 62);
+        tl.to("#el-10-step4-dashboard", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 70);
+        tl.fromTo("#el-11-why", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 70);
+        tl.to("#el-11-why", { opacity: 0, duration: 0.5, ease: "power2.inOut" }, 76);
+        tl.fromTo("#el-12-closing", { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "power2.inOut" }, 76);
+        tl.to({}, { duration: 84 }, 0); // full-span anchor — main.duration() == composition total (Studio master duration)
+      })();
     </script>
   </body>
 </html>

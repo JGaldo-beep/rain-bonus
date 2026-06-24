@@ -51,9 +51,16 @@ export function BonusTimeline({ points }: { points: BonusProjectionPoint[] }) {
               x2={W - padR}
               y1={yBonus(g)}
               y2={yBonus(g)}
-              stroke="rgba(255,255,255,0.08)"
+              stroke="rgba(28,20,16,0.08)"
             />
-            <text x={padL - 8} y={yBonus(g) + 4} textAnchor="end" fontSize="11" fill="#71717a">
+            <text
+              x={padL - 8}
+              y={yBonus(g) + 4}
+              textAnchor="end"
+              fontSize="11"
+              fill="#a99c92"
+              fontFamily="var(--font-mono)"
+            >
               ${g / 1000}k
             </text>
           </g>
@@ -82,9 +89,9 @@ export function BonusTimeline({ points }: { points: BonusProjectionPoint[] }) {
         <polyline
           points={precipLine}
           fill="none"
-          stroke="#38bdf8"
-          strokeWidth="1.5"
-          strokeOpacity="0.85"
+          stroke="#2563eb"
+          strokeWidth="2"
+          strokeOpacity="0.9"
         />
 
         {/* x labels every 12h */}
@@ -96,7 +103,8 @@ export function BonusTimeline({ points }: { points: BonusProjectionPoint[] }) {
               y={H - 12}
               textAnchor="middle"
               fontSize="11"
-              fill="#71717a"
+              fill="#a99c92"
+              fontFamily="var(--font-mono)"
             >
               +{i}h
             </text>
@@ -109,28 +117,28 @@ export function BonusTimeline({ points }: { points: BonusProjectionPoint[] }) {
             x2={x(hover) + barW / 2}
             y1={padT}
             y2={padT + plotH}
-            stroke="rgba(255,255,255,0.25)"
+            stroke="rgba(28,20,16,0.16)"
           />
         )}
       </svg>
 
-      <div className="mt-2 flex items-center justify-between text-xs text-white/45">
+      <div className="mt-3 flex items-center justify-between text-xs font-medium text-ink-soft">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-2 w-3 rounded-sm bg-orange-400" /> Bono recomendado
+          <span className="h-2.5 w-3 rounded-sm bg-brand" /> Bono recomendado
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-0.5 w-4 bg-sky-400" /> Precipitación (mm/h)
+          <span className="h-0.5 w-4 rounded-full bg-blue-600" /> Precipitación (mm/h)
         </span>
       </div>
 
       {active && (
-        <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 rounded-lg bg-zinc-900 px-3 py-2 text-xs ring-1 ring-white/15">
-          <span className="text-white/50">+{hover}h · </span>
-          <span style={{ color: rainHex(active.rain_intensity) }}>
+        <div className="pointer-events-none absolute left-1/2 top-0 -translate-x-1/2 rounded-xl bg-ink px-3 py-2 text-xs font-medium text-white shadow-pop ring-1 ring-black/10">
+          <span className="text-white/60">+{hover}h · </span>
+          <span className="font-semibold" style={{ color: rainHex(active.rain_intensity) }}>
             {rainLabel(active.rain_intensity)}
           </span>{" "}
-          <span className="text-white/50">({active.precipitation_mm} mm)</span>{" "}
-          <span className="font-semibold text-orange-300">
+          <span className="text-white/60">({active.precipitation_mm} mm)</span>{" "}
+          <span className="font-bold text-brand-100">
             {formatBonus(active.recommended_bonus_cop)}
           </span>
         </div>

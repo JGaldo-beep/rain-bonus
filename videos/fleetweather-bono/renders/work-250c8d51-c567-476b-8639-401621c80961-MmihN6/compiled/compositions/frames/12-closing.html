@@ -1,0 +1,384 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- head is metadata only; the HyperFrames runtime clones ONLY <template> contents -->
+  </head>
+  <body>
+    <template>
+      <style>
+        #root {
+          position: relative;
+          width: 1920px;
+          height: 1080px;
+          overflow: hidden;
+          background: #ffffff;
+          font-family: "Inter", sans-serif;
+        }
+
+        /* ── micro-camera layer (slow push under the whole shot) ── */
+        .camera {
+          position: absolute;
+          inset: 0;
+          transform-origin: 50% 44%;
+          will-change: transform;
+        }
+
+        /* ── concentric rings (closing atmosphere, behind everything) ── */
+        .rings {
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+        }
+        .rings svg {
+          width: 100%;
+          height: 100%;
+          display: block;
+        }
+        .ring {
+          fill: none;
+          stroke: #ff441f;
+          stroke-width: 1.5;
+          /* drawn via stroke-dashoffset; dasharray set per-ring in script */
+        }
+
+        /* ── content frame (keep-out: everything in top ~83%, y <= 896) ── */
+        .content {
+          position: absolute;
+          inset: 0;
+          box-sizing: border-box;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          /* anchor the lockup high so the fanned chips have room above 896 */
+          padding-top: 196px;
+        }
+
+        /* brand lockup — Rappi logo + FleetWeather, centered hero */
+        .lockup {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 30px;
+          will-change: transform;
+        }
+        .accent-line {
+          width: 64px;
+          height: 4px;
+          border-radius: 2px;
+          background: #ff441f;
+          transform-origin: center;
+          will-change: transform;
+        }
+        .brand-row {
+          display: flex;
+          align-items: center;
+          gap: 30px;
+          will-change: transform;
+        }
+        .logo {
+          height: 104px;
+          width: auto;
+          display: block;
+          will-change: transform;
+        }
+        .wordmark {
+          font-family: "Poppins", sans-serif;
+          font-weight: 700;
+          font-size: 104px;
+          line-height: 1;
+          letter-spacing: -0.02em;
+          color: #1a1a1a;
+          white-space: nowrap;
+          /* fixed box so the discrete letter assembly does not reflow the row */
+          min-width: 620px;
+          text-align: left;
+        }
+
+        /* tagline under the lockup */
+        .tagline {
+          margin-top: 38px;
+          font-family: "Inter", sans-serif;
+          font-weight: 400;
+          font-size: 34px;
+          line-height: 1.4;
+          letter-spacing: 0.01em;
+          color: #5a5a60;
+          text-align: center;
+          will-change: transform;
+        }
+
+        /* stack chips — fan out from center downward */
+        .chips {
+          position: relative;
+          margin-top: 64px;
+          width: 1520px;
+          height: 130px;
+        }
+        .chip {
+          position: absolute;
+          top: 0;
+          left: 50%;
+          /* start stacked at center; GSAP tweens x/y to fanned targets */
+          transform: translate(-50%, 0);
+          display: inline-flex;
+          align-items: center;
+          height: 56px;
+          padding: 0 26px;
+          box-sizing: border-box;
+          white-space: nowrap;
+          background: rgba(255, 68, 31, 0.04);
+          border: 1.5px solid rgba(255, 68, 31, 0.2);
+          border-radius: 100px;
+          font-family: "Poppins", sans-serif;
+          font-weight: 500;
+          font-size: 22px;
+          letter-spacing: 0.01em;
+          color: #ff441f;
+          will-change: transform, opacity;
+        }
+      </style>
+
+      <div id="root" data-composition-id="12-closing" data-width="1920" data-height="1080" data-duration="8">
+        <!-- RINGS — concentric closing atmosphere, behind content (track 0) -->
+        <div class="rings clip" id="rings" data-start="0" data-duration="8" data-track-index="0">
+          <div class="camera" id="rings-camera">
+            <svg viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg">
+              <!-- centered on the lockup (~960, 360) -->
+              <circle class="ring" id="ring-1" cx="960" cy="360" r="240" />
+              <circle class="ring" id="ring-2" cx="960" cy="360" r="420" />
+              <circle class="ring" id="ring-3" cx="960" cy="360" r="620" />
+              <circle class="ring" id="ring-4" cx="960" cy="360" r="840" />
+            </svg>
+          </div>
+        </div>
+
+        <!-- CONTENT — lockup + tagline + stack chips (track 1) -->
+        <div class="content clip" id="content" data-start="0" data-duration="8" data-track-index="1">
+          <div class="camera" id="content-camera">
+            <div class="content-inner" style="display:flex;flex-direction:column;align-items:center;">
+              <!-- brand lockup -->
+              <div class="lockup" id="lockup">
+                <div class="accent-line" id="accent-line"></div>
+                <div class="brand-row" id="brand-row">
+                  <img class="logo" id="logo" src="../../assets/rappi-logo.svg" alt="Rappi" />
+                  <span class="wordmark" id="wordmark"></span>
+                </div>
+              </div>
+
+              <!-- tagline -->
+              <div class="tagline" id="tagline">Bono dinámico por lluvia, end-to-end</div>
+
+              <!-- stack chips fanned from center -->
+              <div class="chips" id="chips">
+                <span class="chip" id="chip-0">Node.js</span>
+                <span class="chip" id="chip-1">Fastify</span>
+                <span class="chip" id="chip-2">PostgreSQL + TimescaleDB</span>
+                <span class="chip" id="chip-3">Redis</span>
+                <span class="chip" id="chip-4">BullMQ</span>
+                <span class="chip" id="chip-5">Next.js</span>
+                <span class="chip" id="chip-6">WebSocket</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+
+        const TOTAL = 8;
+
+        /* ─────────────────────────────────────────────
+           ENTRANCE — concentric rings draw + lockup assembles
+           ───────────────────────────────────────────── */
+        // rings draw via stroke-dashoffset (each ring's circumference → 0)
+        const rings = document.querySelectorAll(".ring");
+        rings.forEach((ring, i) => {
+          const r = Number(ring.getAttribute("r"));
+          const circ = 2 * Math.PI * r;
+          ring.style.strokeDasharray = String(circ);
+          ring.style.strokeDashoffset = String(circ);
+          // outer rings are fainter so the lockup stays dominant
+          ring.style.opacity = String(0.18 - i * 0.03);
+          const draw = { o: circ };
+          tl.to(
+            draw,
+            {
+              o: 0,
+              duration: 1.1,
+              ease: "power2.out",
+              onUpdate: () => {
+                ring.style.strokeDashoffset = String(draw.o);
+              },
+            },
+            0.1 + i * 0.12
+          );
+        });
+
+        // accent-line wipes in above the lockup
+        tl.fromTo(
+          "#accent-line",
+          { scaleX: 0, opacity: 0 },
+          { scaleX: 1, opacity: 1, duration: 0.5, ease: "power3.out" },
+          0.3
+        );
+
+        // Rappi logo rises in
+        tl.fromTo(
+          "#logo",
+          { opacity: 0, y: 20, scale: 0.92 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power3.out" },
+          0.45
+        );
+
+        /* "FleetWeather" assembles (discrete-text-sequence: replace whole
+           text states at time thresholds; instant jumps, no CSS transition) */
+        const SEQUENCE = [
+          { t: 0.0, text: "" },
+          { t: 0.85, text: "Fleet" },
+          { t: 1.05, text: "FleetWea" },
+          { t: 1.25, text: "FleetWeath" },
+          { t: 1.5, text: "FleetWeather" },
+        ];
+        function textAt(time) {
+          for (let i = SEQUENCE.length - 1; i >= 0; i--) {
+            if (time >= SEQUENCE[i].t) return SEQUENCE[i].text;
+          }
+          return "";
+        }
+        const wordmarkEl = document.getElementById("wordmark");
+        let lastText = null;
+        const seqDriver = { t: 0 };
+        tl.to(
+          seqDriver,
+          {
+            t: TOTAL,
+            duration: TOTAL,
+            ease: "none",
+            onUpdate: () => {
+              const next = textAt(seqDriver.t);
+              if (next !== lastText) {
+                wordmarkEl.textContent = next;
+                lastText = next;
+              }
+            },
+          },
+          0
+        );
+
+        // emphasis hit when the wordmark completes
+        tl.fromTo(
+          "#brand-row",
+          { scale: 1 },
+          { scale: 1.02, duration: 0.16, ease: "power2.out", yoyo: true, repeat: 1 },
+          1.5
+        );
+
+        /* ─────────────────────────────────────────────
+           DEVELOPMENT — tagline appears, then stack chips fan
+           out from center downward (center-outward-expansion)
+           ───────────────────────────────────────────── */
+        // tagline fades up
+        tl.fromTo(
+          "#tagline",
+          { opacity: 0, y: 22 },
+          { opacity: 1, y: 0, duration: 0.6, ease: "power3.out" },
+          1.9
+        );
+
+        // chips: each starts stacked at center (translateX(-50%)) and fans
+        // out to a horizontal target with a slight downward drop (downward fan).
+        const chips = document.querySelectorAll('[data-composition-id="12-closing"] .chip');
+        // measured half-widths so the row centers; approx via offsetWidth at rest
+        // targets are laid out symmetrically around center, dropping downward.
+        const FAN_START = 2.35;
+        const STAGGER = 0.07;
+        const EXPAND_DUR = 1.1;
+
+        // build target x offsets so chips sit in a centered row that wraps to
+        // a shallow downward arc. Compute after layout using each chip's width.
+        const gap = 18;
+        let totalW = 0;
+        const widths = [];
+        chips.forEach((c) => {
+          const w = c.offsetWidth;
+          widths.push(w);
+          totalW += w;
+        });
+        totalW += gap * (chips.length - 1);
+        let cursor = -totalW / 2;
+        const targets = [];
+        widths.forEach((w) => {
+          const centerX = cursor + w / 2; // chip center relative to row center
+          targets.push(centerX);
+          cursor += w + gap;
+        });
+        // arc: chips further from center drop slightly lower (downward fan)
+        const maxAbs = Math.max(...targets.map((t) => Math.abs(t))) || 1;
+
+        chips.forEach((c, i) => {
+          const tx = targets[i];
+          const ty = 36 + (Math.abs(tx) / maxAbs) * 34; // 36px → ~70px downward arc
+          tl.fromTo(
+            c,
+            { xPercent: -50, x: 0, y: 0, scale: 0.7, opacity: 0 },
+            {
+              xPercent: -50,
+              x: tx,
+              y: ty,
+              scale: 1,
+              opacity: 1,
+              duration: EXPAND_DUR,
+              ease: "power3.out",
+            },
+            FAN_START + i * STAGGER
+          );
+        });
+
+        /* ─────────────────────────────────────────────
+           SETTLE — logo breathes (sine-wave-loop) + slow push camera.
+           FINAL FRAME: a soft fade-out close is permitted.
+           ───────────────────────────────────────────── */
+        const IDLE_START = 4.0;
+        const IDLE_DUR = TOTAL - IDLE_START;
+        const logoBreath = { p: 0 };
+        tl.to(
+          logoBreath,
+          {
+            p: Math.PI * 2 * 2, // ~2 cycles over 4s ≈ 2s/breath
+            duration: IDLE_DUR,
+            ease: "none",
+            onUpdate: () => {
+              // envelope fades amplitude to 0 over the last 20% so the logo
+              // comes to rest before the close (settle-and-fade idle variant)
+              const t = logoBreath.p / (Math.PI * 2 * 2);
+              const env = t < 0.8 ? 1 : (1 - t) / 0.2;
+              const s = 1 + Math.sin(logoBreath.p) * 0.014 * env;
+              const y = Math.sin(logoBreath.p) * 2.5 * env;
+              const el = document.getElementById("logo");
+              if (el) el.style.transform = `translateY(${y}px) scale(${s})`;
+            },
+          },
+          IDLE_START
+        );
+
+        // slow push camera under the whole shot (macro move ~1.03x)
+        tl.fromTo(
+          ["#content-camera", "#rings-camera"],
+          { scale: 1, x: 0, y: 0 },
+          { scale: 1.03, duration: TOTAL, ease: "power1.inOut" },
+          0
+        );
+
+        // FINAL-FRAME soft fade-out close (permitted only here)
+        tl.to("#content", { opacity: 0, duration: 0.7, ease: "power2.in" }, TOTAL - 0.7);
+        tl.to("#rings", { opacity: 0, duration: 0.7, ease: "power2.in" }, TOTAL - 0.7);
+
+        window.__timelines["12-closing"] = tl;
+      </script>
+    </template>
+  </body>
+</html>
